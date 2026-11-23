@@ -1,8 +1,6 @@
 const $ = (s) => document.querySelector(s);
 const sections = [...document.querySelectorAll("main > section")];
 
-/* ================= EDIT YOUR CONTENT HERE ================= */
-// [image, title, short text (optional), LONG TEXT shown on the side when you hover]
 const why = [
   ["static/image/Screenshot 2026-09-29 224912.png", "My favorite smile", "It makes every day brighter", "Your smile has a special way of making ordinary moments feel warm and unforgettable."],
   ["static/image/Screenshot 2026-10-08 220933.png", "Your kindness", "You care in the little things", "You notice the little details and always know how to make someone feel supported."],
@@ -11,23 +9,19 @@ const why = [
   ["static/image/screen248.jpg", "You make me happy", "Just by being you", "You bring comfort, joy and a calm kind of happiness wherever you go."],
   ["static/image/main-bg.jpg", "My safe place", "Friend. brother. everything", "Thank you for being part of my life and making every moment feel more special."],
 ];
-// [image, title, short text, LONG TEXT shown on the side when you hover]
 const memories = [
   ["static/image/Screenshot 2026-09-29 224912.png", "Our first memory", "A moment to remember", "This moment is special because it reminds me how beautiful our friendship is."],
   ["static/image/Screenshot 2026-10-08 220933.png", "One of our laughs", "No one makes me laugh like you", "Every silly moment with you turns into a memory I never want to forget."],
   ["static/image/Screenshot 2026-11-10 215459.png", "A good conversation", "Hours felt like minutes", "Talking with you always feels easy, comfortable and meaningful."],
   ["static/image/Screenshot 2026-11-10 225534.png", "Together in memory", "A favorite moment", "No matter where life takes us, I hope we keep making memories like this."],
 ];
-const PUZZLE_SIZE = 3; // 3 = 3x3, 4 = 4x4 ...
-/* ========================================================== */
+const PUZZLE_SIZE = 3;
 
-/* ---------- navigation + locks ---------- */
-history.scrollRestoration = "manual"; // a refresh always starts at the top
+history.scrollRestoration = "manual";
 window.scrollTo(0, 0);
 
 let current = 0;
 const goTo = (i) => gooTo(i);
-// if the window/phone bars resize, snap back to the current section
 window.addEventListener("resize", () => sections[current].scrollIntoView());
 
 const downArrow = {};
@@ -45,10 +39,9 @@ sections.forEach((sec, i) => {
   if (i < sections.length - 1) downArrow[sec.id] = make("down", i + 1);
 });
 
-// sections after a lock are "inert": no clicking, no Tab key, so nobody can skip a step
 const reach = (n) => sections.forEach((s, i) => (s.inert = i > n));
 reach(0);
-const reachAfter = { hero: 1, cake: 4, puzzle: 5 }; // unlocking X opens up to this section
+const reachAfter = { hero: 1, cake: 4, puzzle: 5 };
 Object.keys(reachAfter).forEach((id) => {
   downArrow[id].classList.add("locked");
   downArrow[id].disabled = true;
@@ -59,7 +52,6 @@ const unlock = (id) => {
   reach(reachAfter[id]);
 };
 
-/* ---------- 1. gate + typing intro ---------- */
 function typeLine(el, speed = 80) {
   return new Promise((resolve) => {
     const chars = Array.from(el.dataset.text);
@@ -77,9 +69,9 @@ function typeLine(el, speed = 80) {
 }
 const gateBtn = $("#gateBtn");
 gateBtn.onclick = async () => {
-  gateBtn.disabled = true; // so the text can't be typed twice
+  gateBtn.disabled = true;
   $("#gate").classList.add("hide");
-  document.body.classList.add("go"); // starts the image fade + blur
+  document.body.classList.add("go");
   await new Promise((r) => setTimeout(r, 3800));
   for (const line of document.querySelectorAll(".typing")) {
     await typeLine(line);
@@ -88,7 +80,6 @@ gateBtn.onclick = async () => {
   unlock("hero");
 };
 
-/* ---------- 2. cake ---------- */
 function confetti(box) {
   for (let i = 0; i < 50; i++) {
     const c = document.createElement("i");
@@ -112,7 +103,6 @@ $("#blow").onclick = function () {
   setTimeout(() => unlock("cake"), 1500);
 };
 
-/* ---------- 3 + 4. polaroid cards ---------- */
 const polaroid = ([img, title, text, story], i) => `
   <div class="cell"><figure class="polaroid" style="--r:${i % 2 ? 3 : -3}deg">
     <img src="${img}" alt="${title}" onerror="this.onerror=null;this.src='static/image/main-bg.jpg'">
@@ -121,7 +111,6 @@ const polaroid = ([img, title, text, story], i) => `
 $("#whyGrid").innerHTML = why.map(polaroid).join("");
 $("#memGrid").innerHTML = memories.map(polaroid).join("");
 
-/* ---------- 5. puzzle (drag & drop + tap to swap) ---------- */
 const N = PUZZLE_SIZE;
 const board = $("#board");
 board.style.gridTemplateColumns = `repeat(${N}, 1fr)`;
@@ -162,16 +151,14 @@ function swap(a, b) {
 }
 render();
 
-/* ---------- 6. letter ---------- */
 $("#env").onclick = () => {
   $("#env").style.display = "none";
   $("#paper").classList.add("open");
 };
 
-/* ---------- goo transition between sections ---------- */
-const GOO = 9;                 // blobs per layer
-const GOO_TIME = 550;          // ms for each phase (cover / reveal)
-const GOO_LAYERS = [           // [color, lag in ms]: light blue leads, navy follows
+const GOO = 9;
+const GOO_TIME = 550;
+const GOO_LAYERS = [
   ["#8ab4f8", 0],
   ["#2b4c9b", 120],
 ];
@@ -199,7 +186,7 @@ async function gooTo(i) {
   if (busy || i === current) return;
   busy = true;
   document.activeElement.blur();
-  const dir = i > current ? 1 : -1; // down = blobs rise from the bottom, up = fall from the top
+  const dir = i > current ? 1 : -1;
   const T = (y, s) => `translate(-50%, calc(-50% + ${y}vh)) scale(${s})`;
   const play = (frames, lagOf) =>
     Promise.all(
@@ -216,15 +203,14 @@ async function gooTo(i) {
   gooEl.classList.add("on");
   await play((b) => [{ transform: T(dir * 70, 0) }, { transform: T(b.y, 2.6) }], (b) => b.lag);
   current = i;
-  sections[i].scrollIntoView();          // jump while the screen is fully covered
+  sections[i].scrollIntoView();
   await play((b) => [{ transform: T(b.y, 2.6) }, { transform: T(-dir * 70, 0) }], (b) => 120 - b.lag);
   blobs.forEach((b) => b.el.getAnimations().forEach((a) => a.cancel()));
   gooEl.classList.remove("on");
   busy = false;
 }
 
-/* ---------- hover: card grows, the others fade out ---------- */
-const ZOOM_MAX = 1.7; // how big a centered card gets (why section)
+const ZOOM_MAX = 1.7;
 function setupZoom(grid, side) {
   const section = grid.closest("section");
   grid.querySelectorAll(".cell").forEach((cell) => {
@@ -234,20 +220,19 @@ function setupZoom(grid, side) {
       const S = section.getBoundingClientRect();
       const c = cell.getBoundingClientRect();
       let s, cx, cy, px = 0, py = 0, pw = 0;
-      if (!side || !panel) {                 // centered in the grid
+      if (!side || !panel) {
         s = Math.min(ZOOM_MAX, (g.width * 0.6) / c.width, (g.height * 0.95) / c.height);
         cx = g.left + g.width / 2; cy = g.top + g.height / 2;
       } else {
-        // free space = under the title, above the bottom arrow
         const title = section.querySelector(".title").getBoundingClientRect();
         const top = Math.max(title.bottom, S.top + 70) + 16;
         const bottom = S.bottom - 90;
         const H = bottom - top;
-        if (S.width >= 700) {                // card on the left, text on the right
+        if (S.width >= 700) {
           s = Math.min(2.2, (S.width * 0.34) / c.width, H / c.height);
           cx = S.left + S.width * 0.3; cy = top + H / 2;
           pw = Math.min(S.width * 0.34, 380); px = S.left + S.width * 0.72; py = cy;
-        } else {                             // phone: card on top, text under it
+        } else {
           s = Math.min(2.2, (S.width * 0.6) / c.width, (H * 0.56) / c.height);
           cx = S.left + S.width / 2; cy = top + H * 0.29;
           pw = Math.min(S.width * 0.86, 380); px = cx; py = top + H * 0.8;
@@ -262,7 +247,6 @@ function setupZoom(grid, side) {
         set("--px", px - c.left + "px");
         set("--py", py - c.top + "px");
         const ph = panel.offsetHeight;
-        // invisible bridge so the hover doesn't break between the card and the text
         const L = Math.min(cx - (c.width * s) / 2, px - pw / 2) - 12;
         const R = Math.max(cx + (c.width * s) / 2, px + pw / 2) + 12;
         const T = Math.min(cy - (c.height * s) / 2, py - ph / 2) - 12;
@@ -279,5 +263,5 @@ function setupZoom(grid, side) {
     };
   });
 }
-setupZoom($("#whyGrid"), true);  // card on one side + text on the other
-setupZoom($("#memGrid"), true);  // card on one side + text on the other
+setupZoom($("#whyGrid"), true);
+setupZoom($("#memGrid"), true);

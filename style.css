@@ -19,13 +19,12 @@ body {
     background: var(--bg-color);
     color: var(--text-color);
     line-height: 1.5;
-    overflow: hidden; /* no mouse / touch / keyboard scrolling */
+    overflow: hidden;
 }
 
 img { display: block; max-width: 100%; height: auto; }
 button { font-family: inherit; }
 
-/* every section = one screen */
 main > section {
     position: relative;
     width: 100%;
@@ -52,7 +51,6 @@ main > section {
 
 .title { font-size: clamp(1.2rem, 4vw, 2.4rem); }
 
-/* ---------- 1. hero ---------- */
 .hero-section {
     color: var(--text--color-2);
     display: flex;
@@ -84,7 +82,6 @@ main > section {
 }
 @keyframes blink { 50% { opacity: 0; } }
 
-/* ---------- arrows ---------- */
 .arrow {
     position: absolute; left: 50%; transform: translateX(-50%);
     z-index: 5; width: 52px; height: 52px; border-radius: 50%;
@@ -103,7 +100,6 @@ main > section {
     50% { transform: translate(-50%, 10px); }
 }
 
-/* ---------- 2. cake ---------- */
 .cake { background: radial-gradient(circle at 50% 30%, #3b2a6b, #120a2a); color: #fff; }
 .dua { font-size: clamp(1.2rem, 4vw, 2rem); }
 .cake-box { display: flex; flex-direction: column; align-items: center; margin-top: 1.5rem; }
@@ -144,7 +140,6 @@ main > section {
 }
 @keyframes pop { to { transform: translate(var(--x), var(--y)) rotate(720deg); opacity: 0; } }
 
-/* ---------- 3 + 4. polaroid cards ---------- */
 .grid { display: grid; gap: clamp(0.5rem, 2vw, 1.5rem); }
 .six  { grid-template-columns: repeat(3, 1fr); width: min(900px, 94vw, 70vh); }
 .four { grid-template-columns: repeat(2, 1fr); width: min(640px, 94vw, 56vh); }
@@ -160,7 +155,6 @@ main > section {
 .polaroid figcaption { margin-top: 0.4rem; font-size: clamp(0.6rem, 1.6vw, 0.95rem); line-height: 1.25; }
 .polaroid small { display: block; opacity: 0.7; font-size: 0.8em; }
 
-/* ---------- 5. puzzle ---------- */
 .board {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
     width: min(80vw, 50vh, 420px); aspect-ratio: 1;
@@ -174,7 +168,6 @@ main > section {
 }
 .tile.sel { border-color: var(--pink); }
 
-/* ---------- 6. letter ---------- */
 .envelope {
     font-size: 6rem; background: none; border: 0; cursor: pointer;
     animation: float 2s ease-in-out infinite;
@@ -192,9 +185,6 @@ main > section {
 .paper.open { display: block; animation: paperIn 0.8s ease; }
 @keyframes paperIn { from { opacity: 0; transform: translateY(40px) scale(0.9); } }
 
-/* =====================================================
-   BLUE PLAID THEME (overrides the colors above)
-   ===================================================== */
 :root {
     --navy: #2b4c9b;
     --blue: #4a86e8;
@@ -212,12 +202,10 @@ main > section {
     color: var(--navy);
 }
 
-/* hero animation waits for the "click here" button */
 .hero-bg, .hero-overlay { animation: none; }
 body.go .hero-bg { animation: bgIn 1.5s ease forwards; }
 body.go .hero-overlay { animation: overlayIn 1.5s ease 2s forwards; }
 
-/* opening screen */
 .gate {
     position: fixed; inset: 0; z-index: 100;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -249,14 +237,13 @@ body.go .hero-overlay { animation: overlayIn 1.5s ease 2s forwards; }
 .s1 { top: 12%; right: 12%; }
 .s2 { top: 26%; right: 5%; font-size: 3rem; animation-delay: .6s; }
 
-/* shared look for the other sections */
 main > section:not(.hero-section) { --arrow: var(--navy); }
 main > section:not(.hero-section) .arrow { background: rgba(255,255,255,.7); }
-main > section:not(.hero-section)::before {   /* heart in the corner */
+main > section:not(.hero-section)::before {
     content: "💙"; position: absolute; top: 1.2rem; left: 1.2rem;
     font-size: 2rem; transform: rotate(-12deg);
 }
-main > section:not(.hero-section)::after {    /* torn paper edge */
+main > section:not(.hero-section)::after {
     content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 16px;
     background: conic-gradient(from -45deg at bottom, #0000, #fff 1deg 90deg, #0000 91deg) 0 0 / 26px 100%;
     pointer-events: none;
@@ -267,7 +254,6 @@ main > section:not(.hero-section)::after {    /* torn paper edge */
 }
 .title { font-size: clamp(1.3rem, 4.5vw, 2.8rem); }
 
-/* cake */
 .candle { background: repeating-linear-gradient(45deg, #fff 0 6px, var(--blue) 6px 12px); }
 .layer.top { background: #7fb0f5; }
 .layer.bottom { background: #a9cbf8; }
@@ -278,21 +264,18 @@ main > section:not(.hero-section)::after {    /* torn paper edge */
     font-family: var(--font-title); letter-spacing: 1px;
 }
 
-/* polaroids with tape */
 .polaroid { position: relative; color: var(--navy); }
 .polaroid::before {
     content: ""; position: absolute; top: -8px; left: 50%; width: 40%; height: 14px;
     transform: translateX(-50%) rotate(-4deg); background: rgba(120,170,245,.75);
 }
 
-/* puzzle window */
 .board {
     background: var(--navy); border: 5px solid var(--navy); border-radius: 12px;
     box-shadow: 8px 8px 0 rgba(43,76,155,.25);
 }
 .tile.sel { border-color: #fff; }
 
-/* letter */
 .envelope span { color: var(--navy); }
 .paper {
     background: #f4f9ff; color: var(--navy); border: 3px solid var(--navy);
@@ -300,11 +283,9 @@ main > section:not(.hero-section)::after {    /* torn paper edge */
 }
 .paper h2 { font-family: var(--font-title); letter-spacing: 1px; }
 
-/* ---------- fixes ---------- */
-html, body { overflow: hidden; overscroll-behavior: none; } /* also blocks phone swipe-scroll */
-.arrow.locked { visibility: hidden; }                       /* hidden arrows can't be reached with Tab */
+html, body { overflow: hidden; overscroll-behavior: none; }
+.arrow.locked { visibility: hidden; }
 
-/* ---------- goo transition ---------- */
 .goo { position: fixed; inset: 0; z-index: 90; pointer-events: none; filter: url(#goo); display: none; }
 .goo.on { display: block; }
 .goo i {
@@ -312,7 +293,6 @@ html, body { overflow: hidden; overscroll-behavior: none; } /* also blocks phone
     transform: translate(-50%, -50%) scale(0);
 }
 
-/* ---------- "why I like him": hover zoom ---------- */
 .grid .polaroid { transition: transform .5s cubic-bezier(.2,.8,.2,1), opacity .4s, box-shadow .4s; }
 .grid.zooming .cell:not(.on) .polaroid { opacity: 0; transform: scale(.8); }
 .grid .cell.on { position: relative; z-index: 5; }
@@ -321,10 +301,9 @@ html, body { overflow: hidden; overscroll-behavior: none; } /* also blocks phone
     box-shadow: 0 18px 40px rgba(0, 0, 0, .35);
 }
 
-/* ---------- memories: card on one side, text on the other ---------- */
 .grid .cell { position: relative; }
 .grid.zooming .cell:not(.on) { pointer-events: none; }
-.cell.on::before {            /* invisible bridge between card and text */
+.cell.on::before {
     content: ""; position: absolute; z-index: -1;
     left: var(--bx); top: var(--by); width: var(--bw); height: var(--bh);
 }
